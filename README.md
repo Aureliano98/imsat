@@ -13,6 +13,15 @@ For reproducing the experiments on MNIST datasets in [1], run the following code
 
 `calculate_distance.py` can be used to calculate the perturbation range for Virtual Adversarial Training [2]. For MNIST dataset, we have already calculated the range.
 
+# Refactoring Notes (LYL)
+I have managed to make the code run on MNIST and Fashion-MNIST in the following environment (not including imsat_hash.py).
+- Python 3.5
+- Chainer 4.4.0, cupy 4.1.0, sklearn 0.20.0, munkres 1.0.7
+
+Run Python script_name --help for argument details.
+
+Note: imsat_cluster.py may present somewhat different behavior (chainer.links.Linear no longer accepts wscale argument), but the results on MNIST seem quite similar.
+
 ## Reference ##
 [1] Weihua Hu, Takeru Miyato, Seiya Tokui, Eiichi Matsumoto and Masashi Sugiyama. Learning Discrete Representations via Information Maximizing Self-Augmented Training. In ICML, 2017. Available at http://arxiv.org/abs/1702.08720
 

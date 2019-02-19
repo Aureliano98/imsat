@@ -8,26 +8,21 @@ from chainer import Variable, optimizers, cuda, serializers
 from munkres import Munkres, print_matrix
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--gpu', type=int, help='which gpu device to use', default=1)
+parser.add_argument('--gpu', type=int, help='which gpu device to use (default=1)', default=1)
 parser.add_argument('--lam', type=float, help='trade-off parameter for mutual information and smooth regularization',
                     default=0.1)
 parser.add_argument('--mu', type=float, help='trade-off parameter for entropy minimization and entropy maximization',
                     default=4)
 parser.add_argument('--prop_eps', type=float, help='epsilon', default=0.25)
-parser.add_argument('--dataset', type=str, help='which dataset to use', 
+parser.add_argument('--dataset', type=str, help='which dataset to use (mnist / fashion-mnist, default=mnist)', 
                     default='mnist', choices=['mnist', 'fashion-mnist'])
 parser.add_argument('--hidden_list', type=str, help='hidden size list', default='1200-1200')
 
 args = parser.parse_args()
 
-if args.dataset == 'mnist':
-    sys.path.append('mnist')
-    from load import *
-
-    whole = load_whole(path='mnist/', scale=1.0 / 128.0, shift=-1.0)
-else:
-    print ('The dataset is not supported.')
-    raise NotImplementedError
+sys.path.append(args.dataset)
+from load import *
+whole = load_whole(path=args.dataset, scale=1.0 / 128.0, shift=-1.0)
 
 n_data = len(whole.data)
 n_class = np.max(whole.label) + 1
