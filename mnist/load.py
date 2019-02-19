@@ -12,9 +12,9 @@ import os
 import scipy.io as scio
 
 
-def load_whole(scale, shift, PATH = '.'):
+def load_whole(scale, shift, path='.'):
     print ('fetch MNIST dataset')
-    mnist = scio.loadmat(os.path.join(PATH, 'mnist-original.mat'))
+    mnist = scio.loadmat(os.path.join(path, 'mnist-original.mat'))
     x = np.transpose(mnist['data']).astype(np.float32) * scale + shift
     y = mnist['label'].astype(np.int32).flatten()
     whole = Data(x, y)

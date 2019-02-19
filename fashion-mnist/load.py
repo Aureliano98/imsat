@@ -4,7 +4,7 @@ import numpy as np
 import gzip
 
 
-def _load_fashion_mnist():
+def _load_fashion_mnist(path) :
     """Loads the Fashion-MNIST dataset.
     Copied from keras.datasets.fashion_mnist.py
 
@@ -13,7 +13,7 @@ def _load_fashion_mnist():
     """
     files = ['train-labels-idx1-ubyte.gz', 'train-images-idx3-ubyte.gz',
              't10k-labels-idx1-ubyte.gz', 't10k-images-idx3-ubyte.gz']
-    paths = [os.path.join('.', f) for f in files]
+    paths = [os.path.join(path, f) for f in files]
 
     with gzip.open(paths[0], 'rb') as lbpath:
         y_train = np.frombuffer(lbpath.read(), np.uint8, offset=8)
@@ -32,9 +32,9 @@ def _load_fashion_mnist():
     return (x_train, y_train), (x_test, y_test)
 
 
-def load_mnist_whole(scale, shift, PATH = '.'):
+def load_mnist_whole(scale, shift, path='.'):
     print ('fetch Fashion-MNIST dataset')
-    (x_train, y_train), (x_test, y_test) = _load_fashion_mnist()
+    (x_train, y_train), (x_test, y_test) = _load_fashion_mnist(path)
     # Respectively: (60k, 28, 28), (60k,), (10k, 28, 28), (10k,)
 
     x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))

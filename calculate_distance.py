@@ -1,7 +1,10 @@
 from __future__ import print_function
 import argparse
 import sys
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 import datetime, math, sys, time
 
 from sklearn.datasets import fetch_mldata
@@ -11,7 +14,7 @@ import cupy as cp
 import chainer
 import chainer.functions as F
 import chainer.links as L
-from chainer import FunctionSet, Variable, optimizers, cuda, serializers
+from chainer import Variable, optimizers, cuda, serializers
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gpu', type=int, help = 'which gpu device to use', default = 1)
@@ -24,7 +27,7 @@ chainer.cuda.get_device(args.gpu).use()
 
 sys.path.append(args.dataset)
 from load import *
-whole = load_whole(scale=1.0/128.0, shift=-1.0)
+whole = load_whole(scale=1.0/128.0, shift=-1.0, path=args.dataset)
     
 data = cuda.to_gpu(whole.data)
 

@@ -22,9 +22,9 @@ args = parser.parse_args()
 
 if args.dataset == 'mnist':
     sys.path.append('mnist')
-    from load_mnist import *
+    from load import *
 
-    whole = load_mnist_whole(PATH='mnist/', scale=1.0 / 128.0, shift=-1.0)
+    whole = load_whole(path='mnist/', scale=1.0 / 128.0, shift=-1.0)
 else:
     print ('The dataset is not supported.')
     raise NotImplementedError
