@@ -9,6 +9,7 @@ import numpy as np
 from chainer import cuda
 import os
 import scipy.io as scio
+cupy = cuda.cupy
 
 class Data:
     def __init__(self, data, label):
@@ -16,6 +17,8 @@ class Data:
         self.data = data
         self.label = label
         self.index = np.arange(len(data))
+        print(cupy.get_array_module(self.label))
+        print(cupy.get_array_module(cuda.to_gpu(self.label)))
 
     def get_index_data(self, index_list):
         return cuda.to_gpu(self.data[index_list])
