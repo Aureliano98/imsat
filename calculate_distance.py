@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse
 import sys
 import cPickle as pickle
@@ -25,7 +26,7 @@ if args.dataset == 'mnist':
     from load_mnist import *
     whole = load_mnist_whole(PATH = 'mnist/', scale=1.0/128.0, shift=-1.0)
 else:
-    print 'The dataset is not supported.'
+    print ('The dataset is not supported.')
     exit(-1)
 
 data = cuda.to_gpu(whole.data)
@@ -33,14 +34,14 @@ data = cuda.to_gpu(whole.data)
 
 num_data = [10]
 
-print num_data
+print (num_data)
 
 dist_accum = 0
 dist_list = [[] for i in range(len(num_data))]
 
 for i in range(len(data)):
 	if i % 1000 == 0:
-		print i
+		print (i)
 	dist = cp.sqrt(cp.sum((data - data[i])**2, axis = 1))
 	dist[i] = 1000
 	sorted_dist = np.sort(cuda.to_cpu(dist))

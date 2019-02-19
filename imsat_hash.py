@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse, sys
 import numpy as np
 import chainer
@@ -30,11 +31,11 @@ if args.dataset == 'mnist':
 
     whole = load_mnist_whole(PATH='mnist/', scale=1.0 / 128.0, shift=-1.0)
 else:
-    print 'The dataset is not supported.'
+    print ('The dataset is not supported.')
     raise NotImplementedError
 
 n_class = np.max(whole.label) + 1
-print n_class
+print (n_class)
 dim = whole.data.shape[1]
 
 data = whole.data
@@ -60,15 +61,15 @@ x_gallary = data[ind_gallary]
 y_query = target[ind_query]
 y_gallary = target[ind_gallary]
 
-print x_query.shape
-print x_gallary.shape
+print (x_query.shape)
+print (x_gallary.shape)
 
 query = Data(x_query, y_query)
 gallary = Data(x_gallary, y_gallary)
 
-print 'use gpu'
+print ('use gpu')
 chainer.cuda.get_device(args.gpu).use()
-print 'query data: ' + str(N_query)
+print ('query data: ' + str(N_query))
 xp = cuda.cupy
 hidden_list = map(int, args.hidden_list.split('-'))
 
@@ -226,7 +227,7 @@ x_query, t_query = cuda.to_gpu(query.data), cuda.to_gpu(query.label)
 x_gallary, t_gallary = cuda.to_gpu(gallary.data), cuda.to_gpu(gallary.label)
 n_epoch = 50
 for epoch in range(n_epoch):
-    print epoch
+    print (epoch)
     sum_cond_ent = 0
     sum_marg_ent = 0
     sum_pairwise_mi = 0
@@ -253,16 +254,16 @@ for epoch in range(n_epoch):
     condent = sum_cond_ent / (N_gallary / batchsize)
     margent = sum_marg_ent / (N_gallary / batchsize)
     pairwise = sum_pairwise_mi / (N_gallary / batchsize)
-    print 'conditional entropy: ' + str(condent)
-    print 'marginal entropy: ' + str(margent)
-    print 'pairwise mi: ' + str(pairwise)
-    print 'vat loss: ' + str(sum_vat / (N_gallary / batchsize))
+    print ('conditional entropy: ' + str(condent))
+    print ('marginal entropy: ' + str(margent))
+    print ('pairwise mi: ' + str(pairwise))
+    print ('vat loss: ' + str(sum_vat / (N_gallary / batchsize)))
 
     sys.stdout.flush()
 
 mAP, withNpreclabel, withRpreclabel = loss_test(Variable(x_query, volatile=True), Variable(t_query, volatile=True),
                                                 Variable(x_gallary, volatile=True), Variable(t_gallary, volatile=True))
 
-print 'mAP: ', mAP
-print 'withNpreclabel: ', withNpreclabel
-print 'withRpreclabel: ', withRpreclabel
+print ('mAP: ', mAP)
+print ('withNpreclabel: ', withNpreclabel)
+print ('withRpreclabel: ', withRpreclabel)

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import cPickle as pickle
 import datetime, math, sys, time
@@ -25,12 +26,12 @@ class Data:
             return cuda.to_gpu(self.data[ind[:n],:].astype(np.float32)), cuda.to_gpu(self.label[ind[:n]].astype(np.int32))
 
 def load_mnist_whole(scale, shift, PATH = '.'):
-    print 'fetch MNIST dataset'
+    print ('fetch MNIST dataset')
     mnist = fetch_mldata('MNIST original', data_home=PATH)
     mnist.data = mnist.data.astype(np.float32)*scale + shift
     mnist.target = mnist.target.astype(np.int32)
     whole = Data(mnist.data, mnist.target)
 
-    print "load mnist done", whole.data.shape
+    print ("load mnist done", whole.data.shape)
     return whole
 

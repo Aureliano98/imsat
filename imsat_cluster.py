@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse, sys
 import numpy as np
 import chainer
@@ -28,10 +29,10 @@ else:
 
 n_data = len(whole.data)
 n_class = np.max(whole.label) + 1
-print n_class
+print (n_class)
 dim = whole.data.shape[1]
 
-print 'use gpu'
+print ('use gpu')
 chainer.cuda.get_device(args.gpu).use()
 xp = cuda.cupy
 hidden_list = map(int, args.hidden_list.split('-'))
@@ -153,7 +154,7 @@ n_epoch = 50
 nearest_dist = np.loadtxt(args.dataset + '/10th_neighbor.txt').astype(np.float32)
 
 for epoch in range(n_epoch):
-    print epoch
+    print (epoch)
 
     sum_loss_entmax = 0
     sum_loss_entmin = 0
@@ -176,12 +177,12 @@ for epoch in range(n_epoch):
 
         loss_ul.unchain_backward()
 
-    print 'entmax ', sum_loss_entmax / (n_data / batchsize_ul)
-    print 'entmin ', sum_loss_entmin / (n_data / batchsize_ul)
-    print 'vatt ', vatt / (n_data / batchsize_ul)
+    print ('entmax ', sum_loss_entmax / (n_data / batchsize_ul))
+    print ('entmin ', sum_loss_entmin / (n_data / batchsize_ul))
+    print ('vatt ', vatt / (n_data / batchsize_ul))
 
     x_ul, t_ul = cuda.to_gpu(whole.data), cuda.to_gpu(whole.label)
     acc, ment = loss_test(Variable(x_ul, volatile=True), Variable(t_ul, volatile=True))
-    print "ment: ", ment
-    print "accuracy: ", acc
+    print ("ment: ", ment)
+    print ("accuracy: ", acc)
     sys.stdout.flush()
