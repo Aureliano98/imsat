@@ -3,7 +3,7 @@ import argparse, sys
 import numpy as np
 import chainer
 import chainer.functions as F
-from chainer import FunctionSet, Variable, optimizers, cuda, serializers
+from chainer import Variable, optimizers, cuda, serializers
 from munkres import Munkres, print_matrix
 
 parser = argparse.ArgumentParser()

@@ -5,16 +5,14 @@ try:
 except:
     import pickle
 import datetime, math, sys, time
-
-#from sklearn.datasets import fetch_mldata
 import numpy as np
-
 from chainer import cuda
-from keras.datasets import mnist
-
+import os
+import scipy.io as scio
 
 class Data:
     def __init__(self, data, label):
+        assert len(data) == len(label)
         self.data = data
         self.label = label
         self.index = np.arange(len(data))
@@ -31,16 +29,10 @@ class Data:
 
 def load_mnist_whole(scale, shift, PATH = '.'):
     print ('fetch MNIST dataset')
-    mnist = fetch_mldata('MNIST original', data_home=PATH)
-    mnist.data = mnist.data.astype(np.float32)*scale + shift
-    mnist.target = mnist.target.astype(np.int32)
-    whole = Data(mnist.data, mnist.target)
-    #(x_train, y_train), (x_test, y_test) = mnist.load_data()
-    #x = np.concatenate((x_train, x_test))
-    #y = np.concatenate((y_train, y_test))
-    #x = x.astype(np.float32) * scale + shift
-    #y = y.astype(np.int32)
-    #whole = Data(x, y)
+    mnist = scio.loadmat(os.path.join(PATH, 'mnist-original.mat'))
+    x = np.transpose(mnist['data']).astype(np.float32) * scale + shift
+    y = mnist['label'].astype(np.int32).flatten()
+    whole = Data(x, y)
 
     print ("load mnist done", whole.data.shape)
     return whole
