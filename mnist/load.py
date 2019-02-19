@@ -1,5 +1,4 @@
 from __future__ import print_function
-#from .. import data
 from data import Data 
 import sys
 try:
@@ -13,7 +12,7 @@ import os
 import scipy.io as scio
 
 
-def load_mnist_whole(scale, shift, PATH = '.'):
+def load_whole(scale, shift, PATH = '.'):
     print ('fetch MNIST dataset')
     mnist = scio.loadmat(os.path.join(PATH, 'mnist-original.mat'))
     x = np.transpose(mnist['data']).astype(np.float32) * scale + shift

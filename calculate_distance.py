@@ -15,20 +15,17 @@ from chainer import FunctionSet, Variable, optimizers, cuda, serializers
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gpu', type=int, help = 'which gpu device to use', default = 1)
-parser.add_argument('--dataset', type=str, default = 'mnist')
+parser.add_argument('--dataset', type=str, default = 'mnist', 
+                    choices=['mnist', 'fashion-mnist'])
 
 args = parser.parse_args()
 
 chainer.cuda.get_device(args.gpu).use()
 
-if args.dataset == 'mnist':
-    sys.path.append('mnist')
-    from load_mnist import *
-    whole = load_mnist_whole(PATH = 'mnist/', scale=1.0/128.0, shift=-1.0)
-else:
-    print ('The dataset is not supported.')
-    exit(-1)
-
+sys.path.append(args.dataset)
+from load import *
+whole = load_whole(scale=1.0/128.0, shift=-1.0)
+    
 data = cuda.to_gpu(whole.data)
 
 

@@ -14,7 +14,8 @@ parser.add_argument('--lam', type=float, help='trade-off parameter for mutual in
 parser.add_argument('--mu', type=float, help='trade-off parameter for entropy minimization and entropy maximization',
                     default=4)
 parser.add_argument('--prop_eps', type=float, help='epsilon', default=0.25)
-parser.add_argument('--dataset', type=str, help='which dataset to use', default='mnist')
+parser.add_argument('--dataset', type=str, help='which dataset to use', 
+                    default='mnist', choices=['mnist', 'fashion-mnist'])
 parser.add_argument('--hidden_list', type=str, help='hidden size list', default='1200-1200')
 
 args = parser.parse_args()
