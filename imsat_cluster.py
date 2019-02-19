@@ -3,6 +3,7 @@ import argparse, sys
 import numpy as np
 import chainer
 import chainer.functions as F
+import chainer.links as L
 from chainer import Variable, optimizers, cuda, serializers
 from munkres import Munkres, print_matrix
 
@@ -87,11 +88,11 @@ def vat(forward, distance, x, eps_list, xi=10, Ip=1):
 class Encoder(chainer.Chain):
     def __init__(self):
         super(Encoder, self).__init__(
-            l1=F.Linear(dim, hidden_list[0], wscale=0.1),
-            l2=F.Linear(hidden_list[0], hidden_list[1], wscale=0.1),
-            l3=F.Linear(hidden_list[1], n_class, wscale=0.0001),
-            bn1=F.BatchNormalization(hidden_list[0]),
-            bn2=F.BatchNormalization(hidden_list[1])
+            l1=L.Linear(dim, hidden_list[0], wscale=0.1),
+            l2=L.Linear(hidden_list[0], hidden_list[1], wscale=0.1),
+            l3=L.Linear(hidden_list[1], n_class, wscale=0.0001),
+            bn1=L.BatchNormalization(hidden_list[0]),
+            bn2=L.BatchNormalization(hidden_list[1])
         )
 
     def __call__(self, x, test=False, update_batch_stats=True):
@@ -106,8 +107,7 @@ def enc_aux_noubs(x):
 
 
 def loss_unlabeled(x, eps_list):
-    L = vat(enc_aux_noubs, distance, x.data, eps_list)
-    return L
+    return vat(enc_aux_noubs, distance, x.data, eps_list)
 
 
 def loss_test(x, t):
