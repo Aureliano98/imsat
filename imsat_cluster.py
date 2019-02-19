@@ -24,7 +24,7 @@ if args.dataset == 'mnist':
 
     whole = load_mnist_whole(PATH='mnist/', scale=1.0 / 128.0, shift=-1.0)
 else:
-    print 'The dataset is not supported.'
+    print ('The dataset is not supported.')
     raise NotImplementedError
 
 n_data = len(whole.data)

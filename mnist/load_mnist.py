@@ -1,6 +1,9 @@
 from __future__ import print_function
 import sys
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 import datetime, math, sys, time
 
 from sklearn.datasets import fetch_mldata
