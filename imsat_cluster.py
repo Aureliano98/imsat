@@ -36,14 +36,14 @@ dim = whole.data.shape[1]
 print ('use gpu')
 chainer.cuda.get_device(args.gpu).use()
 xp = cuda.cupy
-hidden_list = map(int, args.hidden_list.split('-'))
+hidden_list = list(map(int, args.hidden_list.split('-')))
 
 
 def call_bn(bn, x, test=False, update_batch_stats=True):
     if not update_batch_stats:
-        return F.batch_normalization(x, bn.gamma, bn.beta, use_cudnn=False)
+        return F.batch_normalization(x, bn.gamma, bn.beta)#, use_cudnn=False)
     if test:
-        return F.fixed_batch_normalization(x, bn.gamma, bn.beta, bn.avg_mean, bn.avg_var, use_cudnn=False)
+        return F.fixed_batch_normalization(x, bn.gamma, bn.beta, bn.avg_mean, bn.avg_var)#, use_cudnn=False)
     else:
         return bn(x)
 
@@ -88,9 +88,9 @@ def vat(forward, distance, x, eps_list, xi=10, Ip=1):
 class Encoder(chainer.Chain):
     def __init__(self):
         super(Encoder, self).__init__(
-            l1=L.Linear(dim, hidden_list[0], wscale=0.1),
-            l2=L.Linear(hidden_list[0], hidden_list[1], wscale=0.1),
-            l3=L.Linear(hidden_list[1], n_class, wscale=0.0001),
+            l1=L.Linear(dim, hidden_list[0]), #wscale=0.1),
+            l2=L.Linear(hidden_list[0], hidden_list[1]), #wscale=0.1),
+            l3=L.Linear(hidden_list[1], n_class), #wscale=0.0001),
             bn1=L.BatchNormalization(hidden_list[0]),
             bn2=L.BatchNormalization(hidden_list[1])
         )
@@ -109,8 +109,11 @@ def enc_aux_noubs(x):
 def loss_unlabeled(x, eps_list):
     return vat(enc_aux_noubs, distance, x.data, eps_list)
 
-
 def loss_test(x, t):
+    with chainer.no_backprop_mode():
+        return _loss_test(x, t)
+
+def _loss_test(x, t):
     prob = F.softmax(enc(x, test=True)).data
     pmarg = cuda.to_cpu(xp.sum(prob, axis=0) / len(prob))
     ent = np.sum(-pmarg * np.log(pmarg + 1e-8))
@@ -140,7 +143,8 @@ def loss_equal(enc, x):
     ent = entropy(p)
     return ent, -F.sum(p_ave * F.log(p_ave + 1e-8))
 
-
+# LYL: added flag to work around "volatile not supported"
+#chainer.config.enable_backprop = False
 enc = Encoder()
 enc.to_gpu()
 
@@ -159,7 +163,7 @@ for epoch in range(n_epoch):
     sum_loss_entmax = 0
     sum_loss_entmin = 0
     vatt = 0
-    for it in range(n_data / batchsize_ul):
+    for it in range(n_data // batchsize_ul):
         x_u, _, ind = whole.get(batchsize_ul, need_index=True)
         loss_eq1, loss_eq2 = loss_equal(enc, Variable(x_u))
 
@@ -169,7 +173,8 @@ for epoch in range(n_epoch):
         sum_loss_entmax += loss_eq2.data
 
         loss_ul = loss_unlabeled(Variable(x_u), cuda.to_gpu(nearest_dist[ind]))
-        o_enc.zero_grads()
+        #o_enc.zero_grads()
+        enc.cleargrads()
         (loss_ul + args.lam * loss_eq).backward()
         o_enc.update()
 
@@ -182,7 +187,7 @@ for epoch in range(n_epoch):
     print ('vatt ', vatt / (n_data / batchsize_ul))
 
     x_ul, t_ul = cuda.to_gpu(whole.data), cuda.to_gpu(whole.label)
-    acc, ment = loss_test(Variable(x_ul, volatile=True), Variable(t_ul, volatile=True))
+    acc, ment = loss_test(Variable(x_ul), Variable(t_ul))
     print ("ment: ", ment)
     print ("accuracy: ", acc)
     sys.stdout.flush()
