@@ -1,5 +1,6 @@
 from __future__ import print_function
-from ..data import Data 
+#from .. import data
+from data import Data 
 import sys
 try:
     import cPickle as pickle
