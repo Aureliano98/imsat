@@ -2,7 +2,7 @@ from __future__ import print_function
 from data import Data 
 import numpy as np
 import gzip
-
+import os
 
 def _load_fashion_mnist(path) :
     """Loads the Fashion-MNIST dataset.
@@ -32,7 +32,7 @@ def _load_fashion_mnist(path) :
     return (x_train, y_train), (x_test, y_test)
 
 
-def load_mnist_whole(scale, shift, path='.'):
+def load_whole(scale, shift, path='.'):
     print ('fetch Fashion-MNIST dataset')
     (x_train, y_train), (x_test, y_test) = _load_fashion_mnist(path)
     # Respectively: (60k, 28, 28), (60k,), (10k, 28, 28), (10k,)
@@ -41,7 +41,7 @@ def load_mnist_whole(scale, shift, path='.'):
     x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
     x = np.concatenate((x_train, x_test))
     y = np.concatenate((y_train, y_test))
-    x = np.transpose(x).astype(np.float32) * scale + shift
+    x = x.astype(np.float32) * scale + shift
     y = y.astype(np.int32).flatten()
     whole = Data(x, y)
 
