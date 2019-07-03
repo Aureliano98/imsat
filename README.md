@@ -24,6 +24,14 @@ requirements.txt (among which munkres need to be installed by pip)
 
 All other stuff is in the repository.
 
+You can try this script:
+
+```shell
+conda create -name imsat python=3.5.6
+source activate imsat
+while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
+```
+
 ### HOWTO
 
 #### Step 1
@@ -44,7 +52,7 @@ python imsat_cluster.py --dataset {mnist,fashion-mnist}
 
 ### NOTE
 
-`imsat_cluster.py` may behave somewhat differently (`chainer.links.Linear` no longer accepts `wscale` argument, see line 87 - 89 for details), but the results on MNIST seem quite similar.
+`imsat_cluster.py` may behave somewhat differently (because `chainer.links.Linear` no longer accepts `wscale` argument, see line 87 - 89 for details), but the results on MNIST seem quite similar.
 
 ## Reference ##
 [1] Weihua Hu, Takeru Miyato, Seiya Tokui, Eiichi Matsumoto and Masashi Sugiyama. Learning Discrete Representations via Information Maximizing Self-Augmented Training. In ICML, 2017. Available at http://arxiv.org/abs/1702.08720
