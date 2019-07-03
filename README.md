@@ -27,7 +27,7 @@ All other stuff is in the repository.
 You can try this script:
 
 ```shell
-conda create -name imsat python=3.5.6
+conda create --name imsat python=3.5.6
 source activate imsat
 while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
 ```
